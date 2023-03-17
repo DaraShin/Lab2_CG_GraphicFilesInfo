@@ -7,7 +7,8 @@
 * размер изображения (в пикселях);
 * разрешение (dot/inch);
 * глубину цвета;
-* сжатие.
+* сжатие.  
+Приложение обрабатывает следующие форматы файлов: jpg, gif, tif, tiff, bmp, png, pcx.
 ![image](https://user-images.githubusercontent.com/78850433/225841190-d3b6ebe6-3023-498a-a665-311b280bcffa.png)
 # Установка и запуск
 1. Склонировать репозиторий:  
@@ -33,5 +34,19 @@
 * WPF (Windows Presentation Foundation)
 * .NET 6.0
 # Документация
-Для получения информации о файлах графических изображений использован класс <code>System.Drawing.Image</code>
+Для получения информации о файлах графических изображений использован класс <code>Image</code> из библиотеки <code>System.Drawing</code>. С его помощью получена информация о размере и расширении изображения, o глубине цвета (свойство <code>PixelFormat</code>):
 
+```System.Drawing.Image img = System.Drawing.Image.FromFile(fileInfo.FullName);
+row.fileName = fileInfo.Name;
+row.size = img.Width + "x" + img.Height;
+row.resolution = Math.Round(img.HorizontalResolution) + "x" + Math.Round(img.VerticalResolution);
+```
+Получение информации о сжатии:  
+```
+ PropertyItem propertyItem = img.GetPropertyItem(0x0103);
+Int16 compressionCode = BitConverter.ToInt16(propertyItem.Value, 0);
+return compressionTypes[compressionCode];
+```
+ 
+Информация о pcx-файле получена из метаданных с помощью класса <code>ImageMetadataReader</code> из библиотеки <code>MetadataExtractor</code>.
+Для получения информации о сжатии pcx-файла использовано байтовое представление файла.
